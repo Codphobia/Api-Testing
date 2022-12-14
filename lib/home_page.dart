@@ -18,7 +18,8 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   List<PostModel> postList = [];
-
+  Timer? timer;
+  StreamController _streamController = StreamController();
   Future<List<PostModel>> getAllPost() async {
     final response = await http.get(Uri.parse(ApiServicres.allPostUrl));
     var data = jsonDecode(response.body.toString());
@@ -34,18 +35,40 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   CurrentTime? currentTime;
+
   Future<void> getCurrentTime() async {
     final response = await http.get(
       Uri.parse(ApiServicres.timeUrl),
     );
-    print(response.body.toString());
+
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
+      final data = jsonDecode(response.body);
       currentTime = CurrentTime.fromJson(data);
+      if (!_streamController.isClosed) {
+        _streamController.sink.add(currentTime);
+      }
       print(currentTime!.dateTime.toString());
     } else {
       print('something went wrong');
     }
+  }
+
+  @override
+  void initState() {
+    timer = Timer.periodic(
+      Duration(seconds: 0),
+      (timer) {
+        getCurrentTime();
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer!.cancel();
+    _streamController.isClosed;
   }
 
   @override
@@ -61,8 +84,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder(
-              future: getCurrentTime(),
+            child: StreamBuilder(
+              stream: _streamController.stream,
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -77,22 +100,22 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('milliSeconds Time :'),
-                        Text(currentTime!.milliSeconds.toString() ?? 'loading'),
+                        Text(
+                            'Current Time : ${currentTime!.hour.toString()} : ${currentTime!.seconds.toString()} : ${currentTime!.milliSeconds.toString()}'),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('day : '),
-                        Text(currentTime!.day.toString() ?? 'loading'),
+                        Text(currentTime!.date.toString()),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('dayOfWeek'),
-                        Text(currentTime!.dayOfWeek.toString() ?? 'loading'),
+                        const Text('dayOfWeek : '),
+                        Text(currentTime!.dayOfWeek.toString()),
                       ],
                     )
                   ],

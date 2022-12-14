@@ -45,20 +45,20 @@ class CurrentTime {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['year'] = this.year;
-    data['month'] = this.month;
-    data['day'] = this.day;
-    data['hour'] = this.hour;
-    data['minute'] = this.minute;
-    data['seconds'] = this.seconds;
-    data['milliSeconds'] = this.milliSeconds;
-    data['dateTime'] = this.dateTime;
-    data['date'] = this.date;
-    data['time'] = this.time;
-    data['timeZone'] = this.timeZone;
-    data['dayOfWeek'] = this.dayOfWeek;
-    data['dstActive'] = this.dstActive;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['year'] = year;
+    data['month'] = month;
+    data['day'] = day;
+    data['hour'] = hour;
+    data['minute'] = minute;
+    data['seconds'] = seconds;
+    data['milliSeconds'] = milliSeconds;
+    data['dateTime'] = dateTime;
+    data['date'] = date;
+    data['time'] = time;
+    data['timeZone'] = timeZone;
+    data['dayOfWeek'] = dayOfWeek;
+    data['dstActive'] = dstActive;
     return data;
   }
 }
