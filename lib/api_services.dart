@@ -5,4 +5,6 @@ class ApiServicres {
 
   static String allPostUrl = 'https://jsonplaceholder.typicode.com/posts';
   static String addPostUrl = 'https://reqres.in/api/users';
+  static String timeUrl =
+      'https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam';
 }
